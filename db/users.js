@@ -43,7 +43,51 @@ const createAdmin = async ({ username, password, isAdmin }) => {
     }
 }
 
+// get user by username
+const getUserByUsername = async (username) => {
+    try {
+        const { rows: [ user ] } = await client.query(
+            `SELECT * FROM users
+            WHERE username=$1;`, 
+            [username]
+        );
+    
+        if(user !== undefined) {
+            delete user.password;
+        }
+        return user;
+    }
+      catch(error) {
+        console.error("Error: ", error);
+        throw error;
+    }
+}
+
+// deactivate user by username
+const deactivateUserByUsername = async (username) => {
+    try {
+        const { rows: [ user ] } = await client.query(
+            `UPDATE users
+            SET "isActive"=false
+            WHERE username=$1
+            RETURNING *;`, 
+            [username]
+        );
+    
+        if(user !== undefined) {
+            delete user.password;
+        }
+        return user;
+    }
+      catch(error) {
+        console.error("Error: ", error);
+        throw error;
+    }
+}
+
 export {
     createUser,
-    createAdmin
+    createAdmin,
+    getUserByUsername,
+    deactivateUserByUsername
 };

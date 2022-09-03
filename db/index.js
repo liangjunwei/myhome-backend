@@ -1,4 +1,6 @@
 export {
     createUser,
-    createAdmin
+    createAdmin,
+    getUserByUsername,
+    deactivateUserByUsername
 } from './users.js';

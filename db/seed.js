@@ -1,7 +1,9 @@
 import { client } from './client.js';
 import { 
     createAdmin,
-    createUser 
+    createUser,
+    getUserByUsername,
+    deactivateUserByUsername
 } from './index.js';
 import { admins, users } from './initial_data.js';
 
@@ -92,9 +94,18 @@ const testDB = async () => {
         console.log("Creating Admins...");
         const newAdmins = await Promise.all(admins.map(createAdmin));
         console.log(newAdmins);
+
         console.log("Creating Users...");
         const newUsers = await Promise.all(users.map(createUser));
         console.log(newUsers);
+        
+        console.log("Getting user by username(user1)...");
+        const user1 = await getUserByUsername('user1');
+        console.log(user1 ? user1 : "User not existed!");
+
+        console.log("Deactivate user by username(user3)...");
+        const user3 = await deactivateUserByUsername('user3');
+        console.log(user3 ? user3 : "User not existed!");
     } catch (error) {
         console.error(error);
         throw error;
