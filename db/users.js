@@ -43,6 +43,27 @@ const createAdmin = async ({ username, password, isAdmin }) => {
     }
 }
 
+// check if username is existed when user register
+const usernameAvailability = async (username) => {
+    try {
+        const { rows: [ user ] } = await client.query(
+            `SELECT * FROM users
+            WHERE username=$1;`, 
+            [username]
+        );
+
+        if(user !== undefined) {
+            return false;
+        }
+
+        return true;
+    }
+    catch(error) {
+        console.error("Error: ", error);
+        throw error;
+    }
+}
+
 // get user by username
 const getUserByUsername = async (username) => {
     try {
@@ -51,13 +72,10 @@ const getUserByUsername = async (username) => {
             WHERE username=$1;`, 
             [username]
         );
-    
-        if(user !== undefined) {
-            delete user.password;
-        }
+
         return user;
     }
-      catch(error) {
+    catch(error) {
         console.error("Error: ", error);
         throw error;
     }
@@ -79,15 +97,42 @@ const deactivateUserByUsername = async (username) => {
         }
         return user;
     }
-      catch(error) {
+    catch(error) {
         console.error("Error: ", error);
         throw error;
     }
 }
 
+// verify password when user login in
+const verifyPassword = async ({ username, password }) => {
+    try {
+        const user = await getUserByUsername(username);
+        
+        if(user !== undefined) {
+          const hashedPassword = user.password;
+          const passwordsMatch = await bcrypt.compare(password, hashedPassword);
+    
+          if(passwordsMatch) {
+            delete user.password;
+            return user;
+          }
+          else {
+            return undefined;
+          }
+        }
+        
+        return user;
+      }
+      catch(error) {
+        console.error("Error: ", error);
+        throw error;
+      }
+}
+
 export {
     createUser,
     createAdmin,
-    getUserByUsername,
-    deactivateUserByUsername
+    usernameAvailability,
+    deactivateUserByUsername,
+    verifyPassword
 };

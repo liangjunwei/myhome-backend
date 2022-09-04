@@ -1,6 +1,7 @@
 export {
     createUser,
     createAdmin,
-    getUserByUsername,
-    deactivateUserByUsername
+    usernameAvailability,
+    deactivateUserByUsername,
+    verifyPassword
 } from './users.js';
