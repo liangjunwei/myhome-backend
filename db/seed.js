@@ -4,9 +4,11 @@ import {
     createUser,
     usernameAvailability,
     deactivateUserByUsername,
-    verifyPassword
+    verifyPassword,
+    createType,
+    getAllTypes
 } from './index.js';
-import { admins, users } from './initial_data.js';
+import { admins, users, types } from './initial_data.js';
 
 const dropTables = async () => {
     try {
@@ -34,7 +36,7 @@ const createTables = async () => {
         await client.query(`
           CREATE TABLE types (
             id SERIAL PRIMARY KEY,
-            type VARCHAR(255) UNIQUE NOT NULL
+            name VARCHAR(255) UNIQUE NOT NULL
           );
           CREATE TABLE users (
             id SERIAL PRIMARY KEY,
@@ -54,7 +56,7 @@ const createTables = async () => {
             parking INTEGER,
             pets BOOLEAN,
             "userId" INTEGER REFERENCES users(id),
-            approved BOOLEAN DEFAULT false
+            status VARCHAR(255)
           );
           CREATE TABLE messages (
             id SERIAL PRIMARY KEY,
@@ -67,7 +69,8 @@ const createTables = async () => {
           CREATE TABLE images (
             id SERIAL PRIMARY KEY,
             "listingId" INTEGER REFERENCES listings(id),
-            name TEXT UNIQUE NOT NULL
+            name TEXT UNIQUE NOT NULL,
+            cover BOOLEAN DEFAULT false
           );
         `);
     
@@ -111,6 +114,14 @@ const testDB = async () => {
         console.log("Logging in...");
         const user2Login = await verifyPassword({ username: 'user2', password: 'userpassword2' });
         console.log(user2Login ? user2Login : "Username or password is incorrect, please try again!");
+
+        console.log("Createing home types...");
+        const homeTypes = await Promise.all(types.map(createType));
+        console.log(homeTypes);
+
+        console.log("Getting all types...");
+        const allTypes = await getAllTypes();
+        console.log(allTypes);
     } catch (error) {
         console.error(error);
         throw error;

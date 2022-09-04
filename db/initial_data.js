@@ -31,7 +31,10 @@ const users = [
     }
 ];
 
+const types = ['Apartments/Condos', 'Single Houses', 'Town Houses'];
+
 export {
     admins,
-    users
+    users,
+    types
 }
