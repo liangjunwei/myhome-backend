@@ -6,9 +6,13 @@ import {
     deactivateUserByUsername,
     verifyPassword,
     createType,
-    getAllTypes
+    getAllTypes,
+    createListing,
+    approveListingByListingId,
+    getAllApprovedListings,
+    getAllListingsByUserId
 } from './index.js';
-import { admins, users, types } from './initial_data.js';
+import { admins, users, types, listings } from './initial_data.js';
 
 const dropTables = async () => {
     try {
@@ -56,7 +60,7 @@ const createTables = async () => {
             parking INTEGER,
             pets BOOLEAN,
             "userId" INTEGER REFERENCES users(id),
-            status VARCHAR(255)
+            approved BOOLEAN DEFAULT false
           );
           CREATE TABLE messages (
             id SERIAL PRIMARY KEY,
@@ -122,6 +126,24 @@ const testDB = async () => {
         console.log("Getting all types...");
         const allTypes = await getAllTypes();
         console.log(allTypes);
+
+        console.log("Creating listings...");
+        const newListings = await Promise.all(listings.map(createListing));
+        console.log(newListings);
+
+        console.log("Approved some listings...");
+        const approvedListing1 = await approveListingByListingId(1);
+        console.log(approvedListing1);
+        const approvedListing4 = await approveListingByListingId(4);
+        console.log(approvedListing4);
+
+        console.log("Getting all approved listings...");
+        const allApprovedListings = await getAllApprovedListings();
+        console.log(allApprovedListings);
+
+        console.log("Getting all listings by user id 5...");
+        const allListingsByUserId5 = await getAllListingsByUserId(5);
+        console.log(allListingsByUserId5);
     } catch (error) {
         console.error(error);
         throw error;

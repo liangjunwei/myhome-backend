@@ -11,3 +11,10 @@ export {
     getAllTypes,
     deleteTypeById
 } from './types.js';
+
+export {
+    createListing,
+    approveListingByListingId,
+    getAllApprovedListings,
+    getAllListingsByUserId
+} from './listings.js';
