@@ -8,9 +8,11 @@ import {
     createType,
     getAllTypes,
     createListing,
-    approveListingByListingId,
+    approveListingById,
     getAllApprovedListings,
-    getAllListingsByUserId
+    getAllListingsByUserId,
+    getListingById,
+    updateListingById
 } from './index.js';
 import { admins, users, types, listings } from './initial_data.js';
 
@@ -132,9 +134,9 @@ const testDB = async () => {
         console.log(newListings);
 
         console.log("Approved some listings...");
-        const approvedListing1 = await approveListingByListingId(1);
+        const approvedListing1 = await approveListingById(1);
         console.log(approvedListing1);
-        const approvedListing4 = await approveListingByListingId(4);
+        const approvedListing4 = await approveListingById(4);
         console.log(approvedListing4);
 
         console.log("Getting all approved listings...");
@@ -144,6 +146,14 @@ const testDB = async () => {
         console.log("Getting all listings by user id 5...");
         const allListingsByUserId5 = await getAllListingsByUserId(5);
         console.log(allListingsByUserId5);
+
+        console.log("Getting listing 2...");
+        const listing2 = await getListingById(2);
+        console.log(listing2);
+
+        console.log("Updating listing 4...");
+        const updatedListing4 = await updateListingById({id: 4, price: 1200, bathrooms: 2, parking: 2});
+        console.log(updatedListing4);
     } catch (error) {
         console.error(error);
         throw error;

@@ -14,7 +14,9 @@ export {
 
 export {
     createListing,
-    approveListingByListingId,
+    approveListingById,
     getAllApprovedListings,
-    getAllListingsByUserId
+    getAllListingsByUserId,
+    getListingById,
+    updateListingById
 } from './listings.js';
