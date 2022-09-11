@@ -12,7 +12,10 @@ import {
     getAllApprovedListings,
     getAllListingsByUserId,
     getListingById,
-    updateListingById
+    updateListingById,
+    createMessage,
+    getAllMessagesSentByUser,
+    getAllMessagesReceivedByUser
 } from './index.js';
 import { admins, users, types, listings } from './initial_data.js';
 
@@ -154,6 +157,30 @@ const testDB = async () => {
         console.log("Updating listing 4...");
         const updatedListing4 = await updateListingById({id: 4, price: 1200, bathrooms: 2, parking: 2});
         console.log(updatedListing4);
+
+        console.log("Sending a message from user id 4 to user id 6...");
+        const newMessage1 = await createMessage({listingId: 4, senderId: 4, receiverId: 6, content: "Hello I am interested in..."});
+        console.log(newMessage1);
+
+        console.log("Sending second message from user id 4 to user id 6...");
+        const newMessage2 = await createMessage({listingId: 4, senderId: 4, receiverId: 6, content: "Hello again..."});
+        console.log(newMessage2);
+
+        console.log("Replying from user id 6 to user id 4...");
+        const newMessage3 = await createMessage({listingId: 4, senderId: 6, receiverId: 4, content: "Hey how are you?"});
+        console.log(newMessage3);
+
+        console.log("Replying second message from user id 6 to user id 4...");
+        const newMessage4 = await createMessage({listingId: 4, senderId: 6, receiverId: 4, content: "How to contact you?"});
+        console.log(newMessage4);
+
+        console.log("Getting all messages sent by user id 4...");
+        const sentMessagesBy4 = await getAllMessagesSentByUser(4);
+        console.log(sentMessagesBy4);
+
+        console.log("Getting all messages received by user id 4...");
+        const receivedMessagesBy4 = await getAllMessagesReceivedByUser(4);
+        console.log(receivedMessagesBy4);
     } catch (error) {
         console.error(error);
         throw error;

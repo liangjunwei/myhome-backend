@@ -20,3 +20,10 @@ export {
     getListingById,
     updateListingById
 } from './listings.js';
+
+export {
+    createMessage,
+    deleteMessagesByListingId,
+    getAllMessagesSentByUser,
+    getAllMessagesReceivedByUser
+} from './messages.js';
