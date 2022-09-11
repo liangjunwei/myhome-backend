@@ -1,12 +1,17 @@
 {
   "name": "myhome-backend",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "seed:dev": "nodemon ./db/seed.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "Junwei Liang",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "pg": "^8.8.0"
+  }
 }
