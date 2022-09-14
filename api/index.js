@@ -1,5 +1,13 @@
 import express from 'express';
+import jwt from 'jsonwebtoken';
+
 const router = express.Router();
+const { JWT_SECRET } = process.env;
+
+import usersRouter from './users.js';
+
+// /api/users
+router.use('/users', usersRouter);
 
 // Server health check
 router.get('/health', async (req, res, next) => {
