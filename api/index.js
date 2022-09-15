@@ -7,6 +7,7 @@ const { JWT_SECRET } = process.env;
 import { getUserById } from '../db/index.js';
 
 import usersRouter from './users.js';
+import typesRouter from './types.js';
 
 // Authorize and attach current user to request
 router.use(async (req, res, next) => {
@@ -41,6 +42,9 @@ router.use(async (req, res, next) => {
 
 // /api/users
 router.use('/users', usersRouter);
+
+// /api/types
+router.use('/types', typesRouter);
 
 // Server health check
 router.get('/health', async (req, res, next) => {
