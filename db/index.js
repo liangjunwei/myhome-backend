@@ -3,7 +3,8 @@ export {
     createAdmin,
     usernameAvailability,
     deactivateUserByUsername,
-    verifyPassword
+    verifyPassword,
+    getUserById
 } from './users.js';
 
 export {

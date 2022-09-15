@@ -15,7 +15,8 @@ import {
     updateListingById,
     createMessage,
     getAllMessagesSentByUser,
-    getAllMessagesReceivedByUser
+    getAllMessagesReceivedByUser,
+    getUserById
 } from './index.js';
 import { admins, users, types, listings } from './initial_data.js';
 
@@ -115,6 +116,10 @@ const testDB = async () => {
         console.log("Checking username availability(user1)...");
         const usernameNotExisted = await usernameAvailability('user1');
         console.log(usernameNotExisted ? "Username not existed!" : "Username is already existed!");
+
+        console.log("Getting user by id 2");
+        const userId2 = await getUserById(2);
+        console.log(userId2 ? userId2 : "User not existed!");
 
         console.log("Deactivate user by username(user3)...");
         const deactivateUser3 = await deactivateUserByUsername('user3');

@@ -4,7 +4,40 @@ import jwt from 'jsonwebtoken';
 const router = express.Router();
 const { JWT_SECRET } = process.env;
 
+import { getUserById } from '../db/index.js';
+
 import usersRouter from './users.js';
+
+// Authorize and attach current user to request
+router.use(async (req, res, next) => {
+    const prefix = 'Bearer';
+    const auth = req.header('Authorization');
+    
+    if(!auth) {
+        next();
+    } 
+    else if(auth.startsWith(prefix)) {
+        const token = auth.slice(prefix.length + 1);
+        
+        try {
+            const { id } = jwt.verify(token, JWT_SECRET);
+            
+            if(id) {
+                req.user = await getUserById(id);
+                next();
+            }
+        } 
+        catch ({ error, message }) {
+            next({ error, message });
+        }
+    } 
+    else {
+        next({
+            error: 'Malformed Authorization Header',
+            message: `Authorization token must start with ${ prefix }`
+        });
+    }
+});
 
 // /api/users
 router.use('/users', usersRouter);

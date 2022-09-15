@@ -81,6 +81,26 @@ const getUserByUsername = async (username) => {
     }
 }
 
+// get user by id
+const getUserById = async (id) => {
+    try {
+        const { rows: [ user ] } = await client.query(
+            `SELECT * FROM users
+            WHERE id=$1;`, 
+            [id]
+        );
+
+        if(user !== undefined) {
+            delete user.password;
+        }
+        return user;
+    }
+    catch(error) {
+        console.error("Error: ", error);
+        throw error;
+    }
+}
+
 // deactivate user by username
 const deactivateUserByUsername = async (username) => {
     try {
@@ -134,5 +154,6 @@ export {
     createAdmin,
     usernameAvailability,
     deactivateUserByUsername,
-    verifyPassword
+    verifyPassword,
+    getUserById
 };
