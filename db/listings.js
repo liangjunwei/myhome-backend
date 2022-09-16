@@ -82,9 +82,7 @@ const getAllListingsByUserId = async (userId) => {
 const getListingById = async (id) => {
     try {
         const { rows: [ listing ] } = await client.query(
-            `SELECT listings.id, listings.approved, listings.address, types.name AS type, 
-            listings.price, listings.bedrooms, listings.bathrooms, listings.size,
-            listings.parking, listings.pets, users.username FROM listings
+            `SELECT listings.*, types.name AS type, users.username FROM listings
             JOIN types
             ON types.id=listings."typeId"
             JOIN users

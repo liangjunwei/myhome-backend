@@ -17,7 +17,7 @@ const createMessage = async ({ listingId, senderId, receiverId, content }) => {
     }
 }
 
-// delete message by id
+// delete message by listing id
 const deleteMessagesByListingId = async (listingId) => {
     try {
         const { rows } = await client.query(
@@ -37,9 +37,11 @@ const deleteMessagesByListingId = async (listingId) => {
 const getAllMessagesSentByUser = async (userId) => {
     try {
         const { rows } = await client.query(
-            `SELECT * FROM messages
-            WHERE "senderId"=$1
-            ORDER BY id DESC;`, 
+            `SELECT messages.*, users.username AS receiver FROM messages
+            JOIN users
+            ON users.id=messages."receiverId"
+            WHERE messages."senderId"=$1
+            ORDER BY messages.id DESC;`, 
             [userId]
         );
 
@@ -55,9 +57,11 @@ const getAllMessagesSentByUser = async (userId) => {
 const getAllMessagesReceivedByUser = async (userId) => {
     try {
         const { rows } = await client.query(
-            `SELECT * FROM messages
-            WHERE "receiverId"=$1
-            ORDER BY id DESC;`, 
+            `SELECT messages.*, users.username AS sender FROM messages
+            JOIN users
+            ON users.id=messages."senderId"
+            WHERE messages."receiverId"=$1
+            ORDER BY messages.id DESC;`, 
             [userId]
         );
 

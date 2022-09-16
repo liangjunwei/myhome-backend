@@ -8,6 +8,7 @@ import { getUserById } from '../db/index.js';
 
 import usersRouter from './users.js';
 import typesRouter from './types.js';
+import messagesRouter from './messages.js';
 
 // Authorize and attach current user to request
 router.use(async (req, res, next) => {
@@ -45,6 +46,9 @@ router.use('/users', usersRouter);
 
 // /api/types
 router.use('/types', typesRouter);
+
+// /api/messages
+router.use('/messages', messagesRouter);
 
 // Server health check
 router.get('/health', async (req, res, next) => {

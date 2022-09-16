@@ -69,7 +69,7 @@ router.post('/login', async (req, res, next) => {
         if(!user.isActive) {
             next({
                 error: "User Deactivated Error",
-                message: "This user account has been deleted by admin!"
+                message: "This user account has been deactivated by admin!"
             });
             return;
         }
