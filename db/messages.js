@@ -73,9 +73,47 @@ const getAllMessagesReceivedByUser = async (userId) => {
     }
 }
 
+// update message status by id
+const updateMessageStatusById = async (id) => {
+    try {
+        const { rows: [ message ] } = await client.query(
+            `UPDATE messages
+            SET new=false
+            WHERE id=$1
+            RETURNING *;`, 
+            [id]
+        );
+
+        return message;
+    }
+    catch(error) {
+        console.error("Error: ", error);
+        throw error;
+    }
+}
+
+// get message by id
+const getMessageById = async (id) => {
+    try {
+        const { rows: [ message ] } = await client.query(
+            `SELECT * FROM messages
+            WHERE id=$1;`, 
+            [id]
+        );
+
+        return message;
+    }
+    catch(error) {
+        console.error("Error: ", error);
+        throw error;
+    }
+}
+
 export {
     createMessage,
     deleteMessagesByListingId,
     getAllMessagesSentByUser,
-    getAllMessagesReceivedByUser
+    getAllMessagesReceivedByUser,
+    updateMessageStatusById,
+    getMessageById
 };

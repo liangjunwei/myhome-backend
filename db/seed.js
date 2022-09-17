@@ -16,7 +16,9 @@ import {
     createMessage,
     getAllMessagesSentByUser,
     getAllMessagesReceivedByUser,
-    getUserById
+    getUserById,
+    updateMessageStatusById,
+    getMessageById
 } from './index.js';
 import { admins, users, types, listings } from './initial_data.js';
 
@@ -178,6 +180,14 @@ const testDB = async () => {
         console.log("Replying second message from user id 6 to user id 4...");
         const newMessage4 = await createMessage({listingId: 4, senderId: 6, receiverId: 4, content: "How to contact you?"});
         console.log(newMessage4);
+
+        console.log("Getting message by id 2...");
+        const message2 = await getMessageById(2);
+        console.log(message2);
+
+        console.log("Updating message id 2 status...");
+        const readMessage2 = await updateMessageStatusById(2);
+        console.log(readMessage2);
 
         console.log("Getting all messages sent by user id 4...");
         const sentMessagesBy4 = await getAllMessagesSentByUser(4);

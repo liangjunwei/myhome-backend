@@ -26,5 +26,7 @@ export {
     createMessage,
     deleteMessagesByListingId,
     getAllMessagesSentByUser,
-    getAllMessagesReceivedByUser
+    getAllMessagesReceivedByUser,
+    updateMessageStatusById,
+    getMessageById
 } from './messages.js';

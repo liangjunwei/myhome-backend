@@ -6,7 +6,9 @@ import {
     getAllMessagesReceivedByUser,
     createMessage,
     deleteMessagesByListingId,
-    getListingById
+    getListingById,
+    getMessageById,
+    updateMessageStatusById
 } from '../db/index.js';
 
 // GET /api/messages/send/:userId
@@ -98,6 +100,33 @@ router.delete('/delete/:listingId', async (req, res, next) => {
         res.send({
             message: "Deleted successfully!",
             deletedMessages
+        });
+    }
+    catch({ error, message }) {
+        next({ error, message });
+    }
+});
+
+// PATCH /api/messages/update-status/:id
+router.patch('/update-status/:id', async (req, res, next) => {
+    const { id } = req.params;
+    const user = req.user;
+
+    const message = await getMessageById(id);
+
+    if(!user || user.id !== message.receiverId) {
+        next({
+            error: "Unauthorized Error",
+            message: "You don't have permission to perform this action!"
+        });
+        return;
+    }
+
+    try {
+        const updatedMessageStatus = await updateMessageStatusById(id);
+        res.send({
+            message: "Updated successfully!",
+            updatedMessageStatus
         });
     }
     catch({ error, message }) {
