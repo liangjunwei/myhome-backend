@@ -169,7 +169,7 @@ const testDB = async () => {
         console.log(notApprovedListings);
 
         console.log("Getting approved and filtered listings...");
-        const approvedAndFilteredListings = await getApprovedAndFilteredListings('', {typeId: [3], bedrooms: [2]});
+        const approvedAndFilteredListings = await getApprovedAndFilteredListings('ar', {typeId: [1], bedrooms: [2, 1], bathrooms: [1]});
         console.log(approvedAndFilteredListings);
 
         console.log("Getting all listings by user id 5...");

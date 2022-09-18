@@ -79,16 +79,29 @@ const getAllApprovedListings = async () => {
 // get all approved listings using search bar and filter
 const getApprovedAndFilteredListings = async (string, fields) => {
     const searchString = string.toLowerCase();
+    const fieldsKeysArray = Object.keys(fields);
     let filterString = '';
-    if(fields) {
-        filterString = Object.keys(fields).map((key) => {
-            const values = fields[key].map((value) => {
-                return `${value}`;
-            }).join(', ');
+    
+    for(let i = 0; i < fieldsKeysArray.length; i++) {
+        const key = fieldsKeysArray[i];
 
-            return ` AND "${ key }" IN (${values})`;
+        if(fields[key].length !== 0) {
+
+            filterString += ` AND "${key}" IN (`;
+
+            for(let j = 0; j < fields[key].length; j++) {
+                filterString += `${fields[key][j]}`;
+                if(j !== fields[key].length - 1) {
+                    filterString += ', ';
+                }
+            }
+
+            filterString += ')';
+
+            if(i === fieldsKeysArray.length - 1) {
+                filterString += ' '; 
+            }
         }
-        ).join('');
     }
 
     try {
