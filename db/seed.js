@@ -18,7 +18,10 @@ import {
     getAllMessagesReceivedByUser,
     getUserById,
     updateMessageStatusById,
-    getMessageById
+    getMessageById,
+    getNotApprovedYetListings,
+    disapproveListingById,
+    getApprovedAndFilteredListings
 } from './index.js';
 import { admins, users, types, listings } from './initial_data.js';
 
@@ -146,12 +149,28 @@ const testDB = async () => {
         console.log("Approved some listings...");
         const approvedListing1 = await approveListingById(1);
         console.log(approvedListing1);
+        const approvedListing2 = await approveListingById(2);
+        console.log(approvedListing2);
+        const approvedListing3 = await approveListingById(3);
+        console.log(approvedListing3);
         const approvedListing4 = await approveListingById(4);
         console.log(approvedListing4);
 
         console.log("Getting all approved listings...");
         const allApprovedListings = await getAllApprovedListings();
         console.log(allApprovedListings);
+
+        console.log("Disapprove listing id 3...");
+        const disapprovedListing1 = await disapproveListingById(3);
+        console.log(disapprovedListing1);
+
+        console.log("Getting not approved yet listings...");
+        const notApprovedListings = await getNotApprovedYetListings();
+        console.log(notApprovedListings);
+
+        console.log("Getting approved and filtered listings...");
+        const approvedAndFilteredListings = await getApprovedAndFilteredListings('', {typeId: [3], bedrooms: [2]});
+        console.log(approvedAndFilteredListings);
 
         console.log("Getting all listings by user id 5...");
         const allListingsByUserId5 = await getAllListingsByUserId(5);
@@ -196,6 +215,7 @@ const testDB = async () => {
         console.log("Getting all messages received by user id 4...");
         const receivedMessagesBy4 = await getAllMessagesReceivedByUser(4);
         console.log(receivedMessagesBy4);
+
     } catch (error) {
         console.error(error);
         throw error;

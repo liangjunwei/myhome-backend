@@ -19,7 +19,10 @@ export {
     getAllApprovedListings,
     getAllListingsByUserId,
     getListingById,
-    updateListingById
+    updateListingById,
+    getNotApprovedYetListings,
+    disapproveListingById,
+    getApprovedAndFilteredListings
 } from './listings.js';
 
 export {
