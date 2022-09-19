@@ -7,7 +7,10 @@ import {
     getAllListingsByUserId,
     getListingById,
     createListing,
-    deleteListingById
+    deleteListingById,
+    approveListingById,
+    disapproveListingById,
+    updateListingById
 } from '../db/index.js';
 
 // GET /api/listings/approved
@@ -131,6 +134,84 @@ router.delete('/delete/:id', async (req, res, next) => {
         res.send({
             message: "Deleted successfully!",
             deletedListing
+        });
+    }
+    catch({ error, message }) {
+        next({ error, message });
+    }
+});
+
+// PATCH /api/listings/approve/:id
+router.patch('/approve/:id', async (req, res, next) => {
+    const { id } = req.params;
+    const user = req.user;
+
+    if(!user || !user.isAdmin) {
+        next({
+            error: "Unauthorized Error",
+            message: "You don't have permission to perform this action!"
+        });
+        return;
+    }
+
+    try {
+        const approvedListing = await approveListingById(id);
+        res.send({
+            message: "Listing Approved!",
+            approvedListing
+        });
+    }
+    catch({ error, message }) {
+        next({ error, message });
+    }
+});
+
+// PATCH /api/listings/disapprove/:id
+router.patch('/disapprove/:id', async (req, res, next) => {
+    const { id } = req.params;
+    const user = req.user;
+
+    if(!user || !user.isAdmin) {
+        next({
+            error: "Unauthorized Error",
+            message: "You don't have permission to perform this action!"
+        });
+        return;
+    }
+
+    try {
+        const disapprovedListing = await disapproveListingById(id);
+        res.send({
+            message: "Listing Disapproved!",
+            disapprovedListing
+        });
+    }
+    catch({ error, message }) {
+        next({ error, message });
+    }
+});
+
+// PATCH /api/listings/update/:id
+router.patch('/update/:id', async (req, res, next) => {
+    const { id } = req.params;
+    const { address, typeId, price, bedrooms, bathrooms, size, parking, pets } = req.body;
+    const user = req.user;
+
+    const listing = await getListingById(id);
+
+    if(!user || user.id !== listing.userId) {
+        next({
+            error: "Unauthorized Error",
+            message: "You don't have permission to perform this action!"
+        });
+        return;
+    }
+
+    try {
+        const updatedListing = await updateListingById({id, address, typeId, price, bedrooms, bathrooms, size, parking, pets});
+        res.send({
+            message: "Listing Updated!",
+            updatedListing
         });
     }
     catch({ error, message }) {
