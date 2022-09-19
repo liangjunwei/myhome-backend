@@ -52,7 +52,7 @@ router.use('/types', typesRouter);
 router.use('/messages', messagesRouter);
 
 // /api/listings
-router.use('listings', listingsRouter);
+router.use('/listings', listingsRouter);
 
 // Server health check
 router.get('/health', async (req, res, next) => {

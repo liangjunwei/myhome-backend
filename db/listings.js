@@ -212,6 +212,22 @@ const updateListingById = async ({id, ...fields}) => {
     }
 }
 
+// delete listing by id
+const deleteListingById = async (id) => {
+    try {
+        const { rows: [ listing ] } = await client.query(
+            `DELETE FROM listings
+            WHERE id=$1
+            RETURNING *;`, [id]
+        );
+        return listing;
+    }
+    catch(error) {
+        console.error("Error: ", error);
+        throw error;
+    }
+}
+
 export {
     createListing,
     approveListingById,
@@ -221,5 +237,6 @@ export {
     updateListingById,
     getNotApprovedYetListings,
     disapproveListingById,
-    getApprovedAndFilteredListings
+    getApprovedAndFilteredListings,
+    deleteListingById
 };

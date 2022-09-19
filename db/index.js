@@ -22,7 +22,8 @@ export {
     updateListingById,
     getNotApprovedYetListings,
     disapproveListingById,
-    getApprovedAndFilteredListings
+    getApprovedAndFilteredListings,
+    deleteListingById
 } from './listings.js';
 
 export {
