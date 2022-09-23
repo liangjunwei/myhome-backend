@@ -171,7 +171,7 @@ router.patch('/disapprove/:id', async (req, res, next) => {
     const { id } = req.params;
     const user = req.user;
 
-    if(!user || !user.isAdmin) {
+    if(!user) {
         next({
             error: "Unauthorized Error",
             message: "You don't have permission to perform this action!"
