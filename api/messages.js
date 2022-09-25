@@ -11,12 +11,11 @@ import {
     updateMessageStatusById
 } from '../db/index.js';
 
-// GET /api/messages/send/:userId
-router.get('/send/:userId', async (req, res, next) => {
-    const { userId } = req.params;
+// GET /api/messages/send
+router.get('/send', async (req, res, next) => {
     const user = req.user;
 
-    if(!user || user.id !== parseInt(userId)) {
+    if(!user) {
         next({
             error: "Unauthorized Error",
             message: "You don't have permission to perform this action!"
@@ -25,7 +24,7 @@ router.get('/send/:userId', async (req, res, next) => {
     }
 
     try {
-        const messages = await getAllMessagesSentByUser(userId);
+        const messages = await getAllMessagesSentByUser(user.id);
         res.send(messages);
     } 
     catch({ error, message }) {
@@ -33,12 +32,11 @@ router.get('/send/:userId', async (req, res, next) => {
     }
 });
 
-// GET /api/messages/receive/:userId
-router.get('/receive/:userId', async (req, res, next) => {
-    const { userId } = req.params;
+// GET /api/messages/receive
+router.get('/receive', async (req, res, next) => {
     const user = req.user;
 
-    if(!user || user.id !== parseInt(userId)) {
+    if(!user) {
         next({
             error: "Unauthorized Error",
             message: "You don't have permission to perform this action!"
@@ -47,7 +45,7 @@ router.get('/receive/:userId', async (req, res, next) => {
     }
 
     try {
-        const messages = await getAllMessagesReceivedByUser(userId);
+        const messages = await getAllMessagesReceivedByUser(user.id);
         res.send(messages);
     } 
     catch({ error, message }) {
