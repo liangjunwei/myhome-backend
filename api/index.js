@@ -10,6 +10,7 @@ import usersRouter from './users.js';
 import typesRouter from './types.js';
 import messagesRouter from './messages.js';
 import listingsRouter from './listings.js';
+import imagesRouter from './images.js';
 
 // Authorize and attach current user to request
 router.use(async (req, res, next) => {
@@ -53,6 +54,9 @@ router.use('/messages', messagesRouter);
 
 // /api/listings
 router.use('/listings', listingsRouter);
+
+// /api/images
+router.use('/images', imagesRouter);
 
 // Server health check
 router.get('/health', async (req, res, next) => {
