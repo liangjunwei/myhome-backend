@@ -3,7 +3,6 @@ import {
     createAdmin,
     createUser,
     usernameAvailability,
-    deactivateUserByUsername,
     verifyPassword,
     createType,
     getAllTypes,
@@ -21,9 +20,11 @@ import {
     getMessageById,
     getNotApprovedYetListings,
     disapproveListingById,
-    getApprovedAndFilteredListings
+    getApprovedAndFilteredListings,
+    storeImageName,
+    setCoverImageById
 } from './index.js';
-import { admins, users, types, listings } from './initial_data.js';
+import { admins, users, types, listings, images } from './initial_data.js';
 
 const dropTables = async () => {
     try {
@@ -126,10 +127,6 @@ const testDB = async () => {
         const userId2 = await getUserById(2);
         console.log(userId2 ? userId2 : "User not existed!");
 
-        console.log("Deactivate user by username(user3)...");
-        const deactivateUser3 = await deactivateUserByUsername('user3');
-        console.log(deactivateUser3 ? deactivateUser3 : "User not existed!");
-
         console.log("Logging in...");
         const user2Login = await verifyPassword({ username: 'user2', password: 'userpassword2' });
         console.log(user2Login ? user2Login : "Username or password is incorrect, please try again!");
@@ -145,6 +142,23 @@ const testDB = async () => {
         console.log("Creating listings...");
         const newListings = await Promise.all(listings.map(createListing));
         console.log(newListings);
+
+        console.log("Storing images for each listing...");
+        const newImages = await Promise.all(images.map(storeImageName));
+        console.log(newImages);
+
+        console.log("Setting cover image for listing 1...");
+        const cover1 = await setCoverImageById(1);
+        console.log(cover1);
+        console.log("Setting cover image for listing 2...");
+        const cover2 = await setCoverImageById(6);
+        console.log(cover2);
+        console.log("Setting cover image for listing 3...");
+        const cover3 = await setCoverImageById(12);
+        console.log(cover3);
+        console.log("Setting cover image for listing 4...");
+        const cover4 = await setCoverImageById(17);
+        console.log(cover4);
 
         console.log("Approved some listings...");
         const approvedListing1 = await approveListingById(1);

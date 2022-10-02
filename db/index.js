@@ -34,3 +34,9 @@ export {
     updateMessageStatusById,
     getMessageById
 } from './messages.js';
+
+export {
+    storeImageName,
+    setCoverImageById,
+    getCoverImageByListingId
+} from './images.js';
