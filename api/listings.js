@@ -13,8 +13,8 @@ import {
     updateListingById
 } from '../db/index.js';
 
-// GET /api/listings/approved
-router.get('/approved', async (req, res, next) => {
+// POST /api/listings/approved
+router.post('/approved', async (req, res, next) => {
     const { searchString, typeId, bedrooms, bathrooms } = req.body;
 
     try {
