@@ -53,8 +53,27 @@ const getCoverImageByListingId = async (listingId) => {
     }
 }
 
+// get all images by listing id
+const getAllImagesByListingId = async (listingId) => {
+    try {
+        const { rows } = await client.query(
+            `SELECT * FROM images
+            WHERE "listingId"=$1
+            ORDER by cover DESC;`, 
+            [listingId]
+        );
+
+        return rows;
+    }
+    catch(error) {
+        console.error("Error: ", error);
+        throw error;
+    }
+}
+
 export {
     storeImageName,
     setCoverImageById,
-    getCoverImageByListingId
+    getCoverImageByListingId,
+    getAllImagesByListingId
 };

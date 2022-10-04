@@ -22,7 +22,8 @@ import {
     disapproveListingById,
     getApprovedAndFilteredListings,
     storeImageName,
-    setCoverImageById
+    setCoverImageById,
+    getAllImagesByListingId
 } from './index.js';
 import { admins, users, types, listings, images } from './initial_data.js';
 
@@ -159,6 +160,10 @@ const testDB = async () => {
         console.log("Setting cover image for listing 4...");
         const cover4 = await setCoverImageById(17);
         console.log(cover4);
+
+        console.log("Gettting all images for listing 1...");
+        const allImages = await getAllImagesByListingId(3);
+        console.log(allImages);
 
         console.log("Approved some listings...");
         const approvedListing1 = await approveListingById(1);

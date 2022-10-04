@@ -8,7 +8,7 @@ import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3
 import crypto from 'crypto';
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-import { getCoverImageByListingId } from '../db/index.js';
+import { getCoverImageByListingId, getAllImagesByListingId } from '../db/index.js';
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -72,6 +72,36 @@ router.get('/cover/:listingId', async (req, res, next) => {
         
         res.send({
             imageUrl: url
+        });
+    } 
+    catch({ error, message }) {
+        next({ error, message });
+    }
+});
+
+// GET /api/images/:listingId
+router.get('/:listingId', async (req, res, next) => {
+    const { listingId } = req.params;
+
+    try {
+        const images = await getAllImagesByListingId(listingId);
+
+        const allImageUrls = [];
+
+        for(let i = 0; i < images.length; i++) {
+            const getObjectParams = {
+                Bucket: bucketName,
+                Key: images[i].name
+            }
+
+            const command = new GetObjectCommand(getObjectParams);
+            const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+
+            allImageUrls.push(url);
+        }
+        
+        res.send({
+            imageUrls: allImageUrls
         });
     } 
     catch({ error, message }) {
