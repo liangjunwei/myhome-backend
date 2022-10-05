@@ -55,7 +55,7 @@ router.get('/receive', async (req, res, next) => {
 
 // POST /api/messages/create
 router.post('/create', async (req, res, next) => {
-    const { listingId, senderId, receiverId, content } = req.body;
+    const { listingId, receiverId, content } = req.body;
     const user = req.user;
 
     if(!user) {
@@ -66,8 +66,16 @@ router.post('/create', async (req, res, next) => {
         return;
     }
 
+    if(user.id === receiverId) {
+        next({
+            error: "Message Sending Error",
+            message: "You can't send message to yourself!"
+        });
+        return;
+    }
+
     try {
-        const newMessage = await createMessage({listingId, senderId, receiverId, content});
+        const newMessage = await createMessage({listingId, senderId: user.id, receiverId, content});
         res.send({
             message: "Message sent!",
             newMessage
