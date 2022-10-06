@@ -47,12 +47,11 @@ router.get('/not-approved', async (req, res, next) => {
     }
 });
 
-// GET /api/listings/user/:userId
-router.get('/user/:userId', async (req, res, next) => {
-    const { userId } = req.params;
+// GET /api/listings/user
+router.get('/user', async (req, res, next) => {
     const user = req.user;
 
-    if(!user || user.id !== parseInt(userId)) {
+    if(!user) {
         next({
             error: "Unauthorized Error",
             message: "You don't have permission to perform this action!"
@@ -61,7 +60,7 @@ router.get('/user/:userId', async (req, res, next) => {
     }
 
     try {
-        const listings = await getAllListingsByUserId(userId);
+        const listings = await getAllListingsByUserId(user.id);
         res.send(listings);
     } 
     catch ({ error, message }) {
