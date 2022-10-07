@@ -8,7 +8,7 @@ import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3
 import crypto from 'crypto';
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-import { getCoverImageByListingId, getAllImagesByListingId } from '../db/index.js';
+import { getCoverImageByListingId, getAllImagesByListingId, storeImageName, setCoverImageById } from '../db/index.js';
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -30,6 +30,7 @@ const upload = multer({ storage: storage });
 
 // POST /api/images/upload
 router.post('/upload', upload.array('images', 10), async (req, res, next) => {
+    const { listingId } = req.body;
     
     try {
         for(let i = 0; i < req.files.length; i++) {
@@ -44,6 +45,13 @@ router.post('/upload', upload.array('images', 10), async (req, res, next) => {
             
             const command = new PutObjectCommand(params);
             await s3.send(command);
+
+            const newImage = await storeImageName({ listingId, name: imageName });
+
+            const cover = await getCoverImageByListingId(listingId);
+            if(!cover) {
+                await setCoverImageById(newImage.id);
+            }
         }
 
         res.send({
