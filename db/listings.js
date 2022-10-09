@@ -127,7 +127,7 @@ const getApprovedAndFilteredListings = async (string, fields) => {
 const getNotApprovedYetListings = async () => {
     try {
         const { rows } = await client.query(
-            `SELECT listings.id, listings.address, types.name AS type, 
+            `SELECT listings.id, listings.approved, listings.address, types.name AS type, 
             listings.price, listings.bedrooms, listings.bathrooms, listings.size FROM listings
             JOIN types
             ON types.id=listings."typeId"
