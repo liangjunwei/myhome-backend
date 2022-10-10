@@ -218,4 +218,25 @@ router.patch('/update/:id', async (req, res, next) => {
     }
 });
 
+// GET /api/listings/owner-check/:id
+router.get('/owner-check/:id', async (req, res, next) => {
+    const { id } = req.params;
+    const user = req.user;
+
+    const listing = await getListingById(id);
+
+    try {
+        if(!user || user.id !== listing.userId) {
+            res.send({owner: false});
+            return;
+        }
+        else {
+            res.send({owner: true});
+        }
+    } 
+    catch ({ error, message }) {
+        next({ error, message });
+    }
+});
+
 export default router;
