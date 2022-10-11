@@ -8,7 +8,8 @@ import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3
 import crypto from 'crypto';
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-import { getCoverImageByListingId, getAllImagesByListingId, storeImageName, setCoverImageById } from '../db/index.js';
+import { getCoverImageByListingId, getAllImagesByListingId, storeImageName, 
+         setCoverImageById, removeCoverImageById } from '../db/index.js';
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -94,7 +95,7 @@ router.get('/:listingId', async (req, res, next) => {
     try {
         const images = await getAllImagesByListingId(listingId);
 
-        const allImageUrls = [];
+        const allImages = [];
 
         for(let i = 0; i < images.length; i++) {
             const getObjectParams = {
@@ -105,13 +106,41 @@ router.get('/:listingId', async (req, res, next) => {
             const command = new GetObjectCommand(getObjectParams);
             const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
 
-            allImageUrls.push(url);
+            allImages.push({id: images[i].id, cover: images[i].cover, url: url});
         }
         
         res.send({
-            imageUrls: allImageUrls
+            allImages
         });
     } 
+    catch({ error, message }) {
+        next({ error, message });
+    }
+});
+
+// PATCH /api/images/set-cover/:id
+router.patch('/set-cover/:id', async (req, res, next) => {
+    const { id } = req.params;
+    const { oldCoverId } = req.body;
+    const user = req.user;
+
+    if(!user) {
+        next({
+            error: "Unauthorized Error",
+            message: "You don't have permission to perform this action!"
+        });
+        return;
+    }
+
+    try {
+        await removeCoverImageById(oldCoverId);
+        const newCoverImage = await setCoverImageById(id);
+        
+        res.send({
+            message: "Cover Image Set!",
+            newCoverImage
+        });
+    }
     catch({ error, message }) {
         next({ error, message });
     }

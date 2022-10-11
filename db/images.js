@@ -36,6 +36,25 @@ const setCoverImageById = async (id) => {
     }
 }
 
+// remove cover image by id
+const removeCoverImageById = async (id) => {
+    try {
+        const { rows: [ image ] } = await client.query(
+            `UPDATE images
+            SET cover=false
+            WHERE id=$1
+            RETURNING *;`, 
+            [id]
+        );
+
+        return image;
+    }
+    catch(error) {
+        console.error("Error: ", error);
+        throw error;
+    }
+}
+
 // get cover image by listing id
 const getCoverImageByListingId = async (listingId) => {
     try {
@@ -59,7 +78,7 @@ const getAllImagesByListingId = async (listingId) => {
         const { rows } = await client.query(
             `SELECT * FROM images
             WHERE "listingId"=$1
-            ORDER by cover DESC;`, 
+            ORDER by cover DESC, id;`, 
             [listingId]
         );
 
@@ -75,5 +94,6 @@ export {
     storeImageName,
     setCoverImageById,
     getCoverImageByListingId,
-    getAllImagesByListingId
+    getAllImagesByListingId,
+    removeCoverImageById
 };

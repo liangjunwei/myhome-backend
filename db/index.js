@@ -39,5 +39,6 @@ export {
     storeImageName,
     setCoverImageById,
     getCoverImageByListingId,
-    getAllImagesByListingId
+    getAllImagesByListingId,
+    removeCoverImageById
 } from './images.js';
