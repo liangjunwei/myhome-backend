@@ -4,12 +4,13 @@ import express from 'express';
 const router = express.Router();
 
 import multer from 'multer';
-import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import crypto from 'crypto';
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import { getCoverImageByListingId, getAllImagesByListingId, storeImageName, 
-         setCoverImageById, removeCoverImageById } from '../db/index.js';
+         setCoverImageById, removeCoverImageById, getImageById, getListingById,
+         deleteImageById } from '../db/index.js';
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -139,6 +140,43 @@ router.patch('/set-cover/:id', async (req, res, next) => {
         res.send({
             message: "Cover Image Set!",
             newCoverImage
+        });
+    }
+    catch({ error, message }) {
+        next({ error, message });
+    }
+});
+
+// DELETE /api/images/delete/:id
+router.delete('/delete/:id', async (req, res, next) => {
+    const { id } = req.params;
+    const user = req.user;
+
+    const image = await getImageById(id);
+    const listing = await getListingById(image.listingId);
+
+    if(!user || user.id !== listing.userId) {
+        next({
+            error: "Unauthorized Error",
+            message: "You don't have permission to perform this action!"
+        });
+        return;
+    }
+
+    try {
+        const params = {
+            Bucket: bucketName,
+            Key: image.name
+        }
+
+        const command = new DeleteObjectCommand(params);
+        await s3.send(command);
+
+        const deletedImage = await deleteImageById(id);
+
+        res.send({
+            message: "Deleted successfully!",
+            deletedImage
         });
     }
     catch({ error, message }) {

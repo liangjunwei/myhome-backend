@@ -90,10 +90,45 @@ const getAllImagesByListingId = async (listingId) => {
     }
 }
 
+// get image by id
+const getImageById = async (id) => {
+    try {
+        const { rows: [ image ] } = await client.query(
+            `SELECT * FROM images
+            WHERE id=$1;`, 
+            [id]
+        );
+
+        return image;
+    }
+    catch(error) {
+        console.error("Error: ", error);
+        throw error;
+    }
+}
+
+// delete image by id
+const deleteImageById = async (id) => {
+    try {
+        const { rows: [ image ] } = await client.query(
+            `DELETE FROM images
+            WHERE id=$1
+            RETURNING *;`, [id]
+        );
+        return image;
+    }
+    catch(error) {
+        console.error("Error: ", error);
+        throw error;
+    }
+}
+
 export {
     storeImageName,
     setCoverImageById,
     getCoverImageByListingId,
     getAllImagesByListingId,
-    removeCoverImageById
+    removeCoverImageById,
+    getImageById,
+    deleteImageById
 };
