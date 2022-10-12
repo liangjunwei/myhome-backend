@@ -123,6 +123,22 @@ const deleteImageById = async (id) => {
     }
 }
 
+// delete images by listing id
+const deleteImagesByListingId = async (listingId) => {
+    try {
+        const { rows } = await client.query(
+            `DELETE FROM images
+            WHERE "listingId"=$1
+            RETURNING *;`, [listingId]
+        );
+        return rows;
+    }
+    catch(error) {
+        console.error("Error: ", error);
+        throw error;
+    }
+}
+
 export {
     storeImageName,
     setCoverImageById,
@@ -130,5 +146,6 @@ export {
     getAllImagesByListingId,
     removeCoverImageById,
     getImageById,
-    deleteImageById
+    deleteImageById,
+    deleteImagesByListingId
 };

@@ -184,4 +184,41 @@ router.delete('/delete/:id', async (req, res, next) => {
     }
 });
 
+/// DELETE /api/images/delete-by-listing/:listingId
+router.delete('/delete-by-listing/:listingId', async (req, res, next) => {
+    const { listingId } = req.params;
+    const user = req.user;
+
+    const images = await getAllImagesByListingId(listingId);
+    const listing = await getListingById(listingId);
+
+    if(!user || user.id !== listing.userId) {
+        next({
+            error: "Unauthorized Error",
+            message: "You don't have permission to perform this action!"
+        });
+        return;
+    }
+
+    try {
+
+        for(let i = 0; i < images.length; i++) {
+            const params = {
+                Bucket: bucketName,
+                Key: images[i].name
+            }
+    
+            const command = new DeleteObjectCommand(params);
+            await s3.send(command);
+        }
+
+        res.send({
+            message: "Deleted successfully!",
+        });
+    }
+    catch({ error, message }) {
+        next({ error, message });
+    }
+});
+
 export default router;

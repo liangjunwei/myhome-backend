@@ -117,7 +117,7 @@ router.post('/create', async (req, res, next) => {
 router.delete('/delete/:id', async (req, res, next) => {
     const { id } = req.params;
     const user = req.user;
-
+    
     const listing = await getListingById(id);
 
     if(!user || user.id !== listing.userId) {

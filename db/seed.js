@@ -77,7 +77,7 @@ const createTables = async () => {
           );
           CREATE TABLE messages (
             id SERIAL PRIMARY KEY,
-            "listingId" INTEGER REFERENCES listings(id),
+            "listingId" INTEGER REFERENCES listings(id) ON DELETE CASCADE,
             "senderId" INTEGER REFERENCES users(id),
             "receiverId" INTEGER REFERENCES users(id),
             content TEXT NOT NULL,
@@ -85,7 +85,7 @@ const createTables = async () => {
           );
           CREATE TABLE images (
             id SERIAL PRIMARY KEY,
-            "listingId" INTEGER REFERENCES listings(id),
+            "listingId" INTEGER REFERENCES listings(id) ON DELETE CASCADE,
             name TEXT UNIQUE NOT NULL,
             cover BOOLEAN DEFAULT false
           );
