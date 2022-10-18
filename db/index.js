@@ -3,7 +3,8 @@ export {
     createAdmin,
     usernameAvailability,
     deactivateUserByUsername,
-    verifyPassword
+    verifyPassword,
+    getUserById
 } from './users.js';
 
 export {
@@ -18,12 +19,28 @@ export {
     getAllApprovedListings,
     getAllListingsByUserId,
     getListingById,
-    updateListingById
+    updateListingById,
+    getNotApprovedYetListings,
+    disapproveListingById,
+    getApprovedAndFilteredListings,
+    deleteListingById
 } from './listings.js';
 
 export {
     createMessage,
     deleteMessagesByListingId,
     getAllMessagesSentByUser,
-    getAllMessagesReceivedByUser
+    getAllMessagesReceivedByUser,
+    updateMessageStatusById,
+    getMessageById
 } from './messages.js';
+
+export {
+    storeImageName,
+    setCoverImageById,
+    getCoverImageByListingId,
+    getAllImagesByListingId,
+    removeCoverImageById,
+    getImageById,
+    deleteImageById
+} from './images.js';

@@ -3,7 +3,6 @@ import {
     createAdmin,
     createUser,
     usernameAvailability,
-    deactivateUserByUsername,
     verifyPassword,
     createType,
     getAllTypes,
@@ -15,9 +14,18 @@ import {
     updateListingById,
     createMessage,
     getAllMessagesSentByUser,
-    getAllMessagesReceivedByUser
+    getAllMessagesReceivedByUser,
+    getUserById,
+    updateMessageStatusById,
+    getMessageById,
+    getNotApprovedYetListings,
+    disapproveListingById,
+    getApprovedAndFilteredListings,
+    storeImageName,
+    setCoverImageById,
+    getAllImagesByListingId
 } from './index.js';
-import { admins, users, types, listings } from './initial_data.js';
+import { admins, users, types, listings, images } from './initial_data.js';
 
 const dropTables = async () => {
     try {
@@ -69,7 +77,7 @@ const createTables = async () => {
           );
           CREATE TABLE messages (
             id SERIAL PRIMARY KEY,
-            "listingId" INTEGER REFERENCES listings(id),
+            "listingId" INTEGER REFERENCES listings(id) ON DELETE CASCADE,
             "senderId" INTEGER REFERENCES users(id),
             "receiverId" INTEGER REFERENCES users(id),
             content TEXT NOT NULL,
@@ -77,7 +85,7 @@ const createTables = async () => {
           );
           CREATE TABLE images (
             id SERIAL PRIMARY KEY,
-            "listingId" INTEGER REFERENCES listings(id),
+            "listingId" INTEGER REFERENCES listings(id) ON DELETE CASCADE,
             name TEXT UNIQUE NOT NULL,
             cover BOOLEAN DEFAULT false
           );
@@ -116,9 +124,9 @@ const testDB = async () => {
         const usernameNotExisted = await usernameAvailability('user1');
         console.log(usernameNotExisted ? "Username not existed!" : "Username is already existed!");
 
-        console.log("Deactivate user by username(user3)...");
-        const deactivateUser3 = await deactivateUserByUsername('user3');
-        console.log(deactivateUser3 ? deactivateUser3 : "User not existed!");
+        console.log("Getting user by id 2");
+        const userId2 = await getUserById(2);
+        console.log(userId2 ? userId2 : "User not existed!");
 
         console.log("Logging in...");
         const user2Login = await verifyPassword({ username: 'user2', password: 'userpassword2' });
@@ -136,15 +144,52 @@ const testDB = async () => {
         const newListings = await Promise.all(listings.map(createListing));
         console.log(newListings);
 
+        console.log("Storing images for each listing...");
+        const newImages = await Promise.all(images.map(storeImageName));
+        console.log(newImages);
+
+        console.log("Setting cover image for listing 1...");
+        const cover1 = await setCoverImageById(1);
+        console.log(cover1);
+        console.log("Setting cover image for listing 2...");
+        const cover2 = await setCoverImageById(6);
+        console.log(cover2);
+        console.log("Setting cover image for listing 3...");
+        const cover3 = await setCoverImageById(12);
+        console.log(cover3);
+        console.log("Setting cover image for listing 4...");
+        const cover4 = await setCoverImageById(17);
+        console.log(cover4);
+
+        console.log("Gettting all images for listing 1...");
+        const allImages = await getAllImagesByListingId(3);
+        console.log(allImages);
+
         console.log("Approved some listings...");
         const approvedListing1 = await approveListingById(1);
         console.log(approvedListing1);
+        const approvedListing2 = await approveListingById(2);
+        console.log(approvedListing2);
+        const approvedListing3 = await approveListingById(3);
+        console.log(approvedListing3);
         const approvedListing4 = await approveListingById(4);
         console.log(approvedListing4);
 
         console.log("Getting all approved listings...");
         const allApprovedListings = await getAllApprovedListings();
         console.log(allApprovedListings);
+
+        console.log("Disapprove listing id 3...");
+        const disapprovedListing1 = await disapproveListingById(3);
+        console.log(disapprovedListing1);
+
+        console.log("Getting not approved yet listings...");
+        const notApprovedListings = await getNotApprovedYetListings();
+        console.log(notApprovedListings);
+
+        console.log("Getting approved and filtered listings...");
+        const approvedAndFilteredListings = await getApprovedAndFilteredListings('ar', {typeId: [1], bedrooms: [2, 1], bathrooms: [1]});
+        console.log(approvedAndFilteredListings);
 
         console.log("Getting all listings by user id 5...");
         const allListingsByUserId5 = await getAllListingsByUserId(5);
@@ -174,6 +219,14 @@ const testDB = async () => {
         const newMessage4 = await createMessage({listingId: 4, senderId: 6, receiverId: 4, content: "How to contact you?"});
         console.log(newMessage4);
 
+        console.log("Getting message by id 2...");
+        const message2 = await getMessageById(2);
+        console.log(message2);
+
+        console.log("Updating message id 2 status...");
+        const readMessage2 = await updateMessageStatusById(2);
+        console.log(readMessage2);
+
         console.log("Getting all messages sent by user id 4...");
         const sentMessagesBy4 = await getAllMessagesSentByUser(4);
         console.log(sentMessagesBy4);
@@ -181,6 +234,7 @@ const testDB = async () => {
         console.log("Getting all messages received by user id 4...");
         const receivedMessagesBy4 = await getAllMessagesReceivedByUser(4);
         console.log(receivedMessagesBy4);
+
     } catch (error) {
         console.error(error);
         throw error;
